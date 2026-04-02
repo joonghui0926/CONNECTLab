@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
-import { Search, X, ChevronDown, Menu } from 'lucide-react';
+import { Search, X, ChevronDown, Menu, Sun, Moon } from 'lucide-react';
 import { NAV_LINKS, RESEARCH_DATA, PUBLICATIONS_DATA } from '../constants/data';
 
 export default function Layout() {
@@ -63,11 +63,20 @@ export default function Layout() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
+  const [isDark, setIsDark] = useState(() => localStorage.getItem('theme') !== 'light');
+
+  const toggleTheme = () => {
+    const next = !isDark;
+    setIsDark(next);
+    document.documentElement.classList.toggle('dark', next);
+    localStorage.setItem('theme', next ? 'dark' : 'light');
+  };
+
   const isMemberActive = location.pathname === '/professor' || location.pathname === '/students';
 
   return (
     <div className="min-h-screen flex flex-col font-sans relative">
-      <header className="fixed top-0 w-full z-40 bg-background/90 backdrop-blur-md border-b border-white/10">
+      <header className="fixed top-0 w-full z-40 bg-background/90 backdrop-blur-md border-b border-fg/10">
         <div className="max-w-7xl mx-auto px-6 h-16 md:h-20 flex items-center justify-between">
           <Link to="/" className="font-serif font-bold text-xl tracking-wider text-primary">
             CONNECT <span className="text-accent">Lab</span>
@@ -89,7 +98,7 @@ export default function Layout() {
                         Members <ChevronDown size={14} className={`transition-transform ${isMembersOpen ? 'rotate-180' : ''}`} />
                       </button>
                       {isMembersOpen && (
-                        <div className="absolute top-full left-0 mt-3 bg-[#111] border border-white/10 rounded-sm shadow-xl py-2 min-w-[140px] z-50">
+                        <div className="absolute top-full left-0 mt-3 bg-background border border-fg/10 rounded-sm shadow-xl py-2 min-w-[140px] z-50">
                           <Link to="/professor" onClick={() => setIsMembersOpen(false)}
                             className={`block px-4 py-2 text-sm uppercase tracking-widest transition-colors hover:text-primary ${location.pathname === '/professor' ? 'text-accent' : 'text-secondary'}`}>
                             Professor
@@ -119,6 +128,10 @@ export default function Layout() {
               className="text-secondary hover:text-accent transition-colors ml-4 focus:outline-none">
               <Search size={20} />
             </button>
+            <button onClick={toggleTheme}
+              className="text-secondary hover:text-accent transition-colors focus:outline-none">
+              {isDark ? <Sun size={20} /> : <Moon size={20} />}
+            </button>
           </nav>
 
           {/* Mobile right buttons */}
@@ -126,6 +139,10 @@ export default function Layout() {
             <button onClick={() => { setIsSearchOpen(true); setSearchQuery(''); }}
               className="text-secondary hover:text-accent transition-colors focus:outline-none p-1">
               <Search size={20} />
+            </button>
+            <button onClick={toggleTheme}
+              className="text-secondary hover:text-accent transition-colors focus:outline-none p-1">
+              {isDark ? <Sun size={20} /> : <Moon size={20} />}
             </button>
             <button onClick={() => setIsMobileMenuOpen(true)}
               className="text-secondary hover:text-primary transition-colors focus:outline-none p-1">
@@ -141,9 +158,9 @@ export default function Layout() {
           {/* Backdrop */}
           <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setIsMobileMenuOpen(false)} />
           {/* Drawer */}
-          <div className="absolute right-0 top-0 h-full w-72 bg-[#111] border-l border-white/10 flex flex-col">
+          <div className="absolute right-0 top-0 h-full w-72 bg-background border-l border-fg/10 flex flex-col">
             {/* Header */}
-            <div className="flex items-center justify-between px-6 h-16 border-b border-white/10">
+            <div className="flex items-center justify-between px-6 h-16 border-b border-fg/10">
               <span className="font-serif font-bold text-lg text-primary">
                 CONNECT <span className="text-accent">Lab</span>
               </span>
@@ -165,7 +182,7 @@ export default function Layout() {
                 <ChevronDown size={14} className={`transition-transform ${isMobileMembersOpen ? 'rotate-180' : ''}`} />
               </button>
               {isMobileMembersOpen && (
-                <div className="bg-white/[0.03] border-b border-white/5">
+                <div className="bg-fg/[0.03] border-b border-white/5">
                   <Link to="/professor"
                     className={`flex items-center px-10 py-3 text-sm uppercase tracking-widest transition-colors ${location.pathname === '/professor' ? 'text-accent' : 'text-secondary hover:text-primary'}`}>
                     Professor
@@ -221,7 +238,7 @@ export default function Layout() {
         <Outlet />
       </main>
 
-      <footer className="border-t border-white/10 mt-16 md:mt-24 py-10 md:py-12 text-center text-sm text-secondary px-6">
+      <footer className="border-t border-fg/10 mt-16 md:mt-24 py-10 md:py-12 text-center text-sm text-secondary px-6">
         <p>© 2026 CONNECT Lab, KAIST. All Rights Reserved.</p>
         <p className="mt-2 text-white/50">N1 715, KAIST, 291 Daehak-ro, Yuseong-gu, Daejeon 34141, Republic of Korea</p>
       </footer>

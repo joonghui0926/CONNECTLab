@@ -6,7 +6,8 @@
       "WebFetch(domain:arxiv.org)",
       "WebFetch(domain:www.eucnc.eu)",
       "WebFetch(domain:dblp.org)",
-      "WebFetch(domain:sites.google.com)"
+      "WebFetch(domain:sites.google.com)",
+      "Bash(npm run:*)"
     ]
   }
 }

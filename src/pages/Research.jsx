@@ -4,7 +4,7 @@ export default function Research() {
   return (
     <div className="max-w-6xl mx-auto px-4 md:px-6 py-16 md:py-32">
       {/* 최상단 Research 제목은 그대로 유지 */}
-      <div className="border-b border-white/20 pb-8 mb-20">
+      <div className="border-b border-fg/20 pb-8 mb-20">
         <h1 className="font-serif text-5xl font-bold text-primary">Research</h1>
       </div>
       

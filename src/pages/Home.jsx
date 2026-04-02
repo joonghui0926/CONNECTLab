@@ -17,7 +17,7 @@ export default function Home() {
   return (
     <div className="w-full">
       {/* 1. Hero Section */}
-      <section className="relative h-screen w-full flex flex-col items-center justify-center overflow-hidden">
+      <section className="relative h-screen w-full flex flex-col items-center justify-center overflow-hidden bg-[#111]">
         <Hero3D />
         
         <div ref={textRef} className="relative z-10 text-center pointer-events-auto opacity-0 px-4 mt-[-10vh]">
@@ -32,14 +32,14 @@ export default function Home() {
             Advancing next-generation theories and systems with mathematical precision<br className="hidden md:block"/> and engineering excellence.
           </p>
           <Link to="/research">
-            <button className="mt-16 px-12 py-5 bg-white text-black font-medium tracking-widest uppercase hover:bg-accent hover:-translate-y-1 hover:shadow-lg transition-all duration-300 rounded-sm">
+            <button className="mt-16 px-12 py-5 bg-fg text-background font-medium tracking-widest uppercase hover:bg-accent hover:-translate-y-1 hover:shadow-lg transition-all duration-300 rounded-sm">
               Explore Research
             </button>
           </Link>
         </div>
 
         {/* 하단 장식선 */}
-        <div ref={decoRef} className="absolute bottom-[8%] left-1/2 -translate-x-1/2 w-px h-[120px] bg-gradient-to-b from-transparent via-white/50 to-transparent opacity-0 z-10" />
+        <div ref={decoRef} className="absolute bottom-[8%] left-1/2 -translate-x-1/2 w-px h-[120px] bg-gradient-to-b from-transparent via-fg/50 to-transparent opacity-0 z-10" />
       </section>
 
       {/* 2. Content Section (여백 기반 디자인) */}
@@ -47,7 +47,7 @@ export default function Home() {
         
         {/* Announcement */}
         <div className="lg:col-span-5">
-          <div className="border-b border-white/20 pb-6 mb-8">
+          <div className="border-b border-fg/20 pb-6 mb-8">
             <h2 className="font-serif text-3xl font-bold text-primary">{HOME_DATA.announcement.title}</h2>
           </div>
           <div className="text-secondary font-light leading-relaxed">
@@ -64,13 +64,13 @@ export default function Home() {
 
         {/* News */}
         <div className="lg:col-span-7">
-          <div className="border-b border-white/20 pb-6 mb-8">
+          <div className="border-b border-fg/20 pb-6 mb-8">
             <h2 className="font-serif text-3xl font-bold text-primary">News</h2>
           </div>
           <ul className="space-y-6">
             {HOME_DATA.news.map((item, index) => (
               <li key={index} className="flex flex-col sm:flex-row gap-2 sm:gap-8 group">
-                <span className="text-white/40 font-mono text-sm w-20 shrink-0 group-hover:text-accent transition-colors">
+                <span className="text-fg/40 font-mono text-sm w-20 shrink-0 group-hover:text-accent transition-colors">
                   {item.date}
                 </span>
                 <span className="text-secondary font-light leading-relaxed group-hover:text-primary transition-colors">

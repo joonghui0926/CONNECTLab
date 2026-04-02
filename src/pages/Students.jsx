@@ -5,7 +5,7 @@ export default function Students() {
 
   return (
     <div className="max-w-6xl mx-auto px-4 md:px-6 py-16 md:py-32">
-      <div className="border-b border-white/20 pb-8 mb-16">
+      <div className="border-b border-fg/20 pb-8 mb-16">
         <h1 className="font-serif text-5xl font-bold text-primary">Students & Alumni</h1>
       </div>
 
@@ -22,14 +22,14 @@ export default function Students() {
         <div className="grid md:grid-cols-2 gap-8 md:gap-12 lg:gap-20">
           {recruitment.sections.map((section, idx) => (
             <div key={idx} className="space-y-4">
-              <h3 className="font-serif text-2xl text-primary border-b border-white/10 pb-3">{section.title}</h3>
+              <h3 className="font-serif text-2xl text-primary border-b border-fg/10 pb-3">{section.title}</h3>
               {section.content && <p className="text-secondary font-light leading-relaxed">{section.content}</p>}
               {section.list && (
                 <ul className="list-disc list-inside space-y-2 text-secondary font-light text-[0.95rem]">
                   {section.list.map((item, itemIdx) => <li key={itemIdx} className="leading-relaxed">{item}</li>)}
                 </ul>
               )}
-              {section.footer && <p className="text-secondary font-light leading-relaxed mt-4 italic text-sm text-white/60">{section.footer}</p>}
+              {section.footer && <p className="text-secondary font-light leading-relaxed mt-4 italic text-sm text-fg/60">{section.footer}</p>}
             </div>
           ))}
         </div>
@@ -41,7 +41,7 @@ export default function Students() {
           {members.map((member, idx) => (
             <article key={idx} className="group">
               {/* aspect-[3/4] 와 object-cover 로 증명사진 사이즈를 완전히 통일 */}
-              <div className="aspect-[3/4] w-full bg-white/5 overflow-hidden rounded-sm mb-5 relative">
+              <div className="aspect-[3/4] w-full bg-fg/5 overflow-hidden rounded-sm mb-5 relative">
                 <img 
                   src={member.image} 
                   alt={member.name}
