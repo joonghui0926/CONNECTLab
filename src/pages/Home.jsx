@@ -2,9 +2,10 @@ import { useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import gsap from 'gsap';
 import Hero3D from '../components/Hero3D';
-import { HOME_DATA } from '../constants/data';
+import { useData } from '../contexts/DataContext';
 
 export default function Home() {
+  const { data: { HOME_DATA } } = useData();
   const textRef = useRef(null);
   const decoRef = useRef(null);
 
@@ -16,10 +17,10 @@ export default function Home() {
 
   return (
     <div className="w-full">
-      {/* 1. Hero Section */}
+      {/* 1. Hero Section - 3D 파티클 배경, 항상 다크 유지 */}
       <section className="relative h-screen w-full flex flex-col items-center justify-center overflow-hidden bg-[#111]">
         <Hero3D />
-        
+
         <div ref={textRef} className="relative z-10 text-center pointer-events-auto opacity-0 px-4 mt-[-10vh]">
           <h1 className="font-serif text-7xl md:text-[8.5rem] font-bold tracking-tight text-transparent bg-clip-text bg-gradient-to-b from-white to-[#e0e0e0]">
             CONNECT
@@ -42,9 +43,9 @@ export default function Home() {
         <div ref={decoRef} className="absolute bottom-[8%] left-1/2 -translate-x-1/2 w-px h-[120px] bg-gradient-to-b from-transparent via-fg/50 to-transparent opacity-0 z-10" />
       </section>
 
-      {/* 2. Content Section (여백 기반 디자인) */}
+      {/* 2. Content Section */}
       <section className="max-w-7xl mx-auto px-4 md:px-6 py-16 md:py-32 grid lg:grid-cols-12 gap-10 md:gap-20">
-        
+
         {/* Announcement */}
         <div className="lg:col-span-5">
           <div className="border-b border-fg/20 pb-6 mb-8">

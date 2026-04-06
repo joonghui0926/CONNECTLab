@@ -1,6 +1,7 @@
-import { STUDENTS_DATA } from '../constants/data';
+import { useData } from '../contexts/DataContext';
 
 export default function Students() {
+  const { data: { STUDENTS_DATA } } = useData();
   const { recruitment, members } = STUDENTS_DATA;
 
   return (
@@ -40,15 +41,14 @@ export default function Students() {
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 md:gap-10">
           {members.map((member, idx) => (
             <article key={idx} className="group">
-              {/* aspect-[3/4] 와 object-cover 로 증명사진 사이즈를 완전히 통일 */}
               <div className="aspect-[3/4] w-full bg-fg/5 overflow-hidden rounded-sm mb-5 relative">
-                <img 
-                  src={member.image} 
+                <img
+                  src={member.image}
                   alt={member.name}
                   className="w-full h-full object-cover transition-all duration-500"
                   onError={(e) => {
                     e.target.style.display = 'none';
-                    e.target.parentElement.innerHTML = `<span class="absolute inset-0 flex items-center justify-center text-white/20 font-serif text-sm">No Image</span>`;
+                    e.target.parentElement.innerHTML = `<span class="absolute inset-0 flex items-center justify-center text-fg/20 font-serif text-sm">No Image</span>`;
                   }}
                 />
               </div>

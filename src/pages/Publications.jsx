@@ -1,6 +1,5 @@
-import { PUBLICATIONS_DATA } from '../constants/data';
+import { useData } from '../contexts/DataContext';
 
-// 반복되는 리스트 렌더링을 위한 헬퍼 컴포넌트
 const PublicationList = ({ title, items, isJournal = false }) => (
   <section className="mb-20">
     <h2 className="font-serif text-3xl font-bold text-primary border-b border-fg/20 pb-4 mb-8">
@@ -24,15 +23,16 @@ const PublicationList = ({ title, items, isJournal = false }) => (
 );
 
 export default function Publications() {
+  const { data: { PUBLICATIONS_DATA } } = useData();
   const { ieeeLink, preprints, journals, conferences } = PUBLICATIONS_DATA;
 
   return (
     <div className="max-w-5xl mx-auto px-4 md:px-6 py-16 md:py-32">
       <div className="border-b border-fg/20 pb-8 mb-16 flex flex-col md:flex-row md:items-end justify-between gap-4">
         <h1 className="font-serif text-5xl font-bold text-primary">Publications</h1>
-        <a 
-          href={ieeeLink} 
-          target="_blank" 
+        <a
+          href={ieeeLink}
+          target="_blank"
           rel="noopener noreferrer"
           className="text-accent text-sm font-medium uppercase tracking-widest hover:text-primary transition-colors flex items-center gap-2 group"
         >
@@ -43,7 +43,7 @@ export default function Publications() {
         </a>
       </div>
 
-<PublicationList title="Submitted preprints (available upon request)" items={preprints} />
+      <PublicationList title="Submitted preprints (available upon request)" items={preprints} />
       <PublicationList title="Journal Papers" items={journals} isJournal={true} />
       <PublicationList title="Conference Papers and Presentation" items={conferences} />
     </div>

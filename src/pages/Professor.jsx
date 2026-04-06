@@ -1,6 +1,7 @@
-import { PROFESSOR_DATA } from '../constants/data';
+import { useData } from '../contexts/DataContext';
 
 export default function Professor() {
+  const { data: { PROFESSOR_DATA } } = useData();
   return (
     <div className="max-w-6xl mx-auto px-4 md:px-6 py-16 md:py-32">
       <div className="border-b border-fg/20 pb-8 mb-16">

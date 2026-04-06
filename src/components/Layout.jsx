@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { Search, X, ChevronDown, Menu, Sun, Moon } from 'lucide-react';
 import { NAV_LINKS, RESEARCH_DATA, PUBLICATIONS_DATA } from '../constants/data';
+import AdminPanel from './AdminPanel';
 
 export default function Layout() {
   const location = useLocation();
@@ -14,7 +15,7 @@ export default function Layout() {
   const [isMobileMembersOpen, setIsMobileMembersOpen] = useState(false);
   const membersRef = useRef(null);
 
-  // 페이지 이동 시 모바일 메뉴 닫기
+  // 페이지 이동하면 모바일 메뉴 닫기
   useEffect(() => {
     setIsMobileMenuOpen(false);
     setIsMobileMembersOpen(false);
@@ -30,7 +31,7 @@ export default function Layout() {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  // 모바일 메뉴 열릴 때 스크롤 잠금
+  // 모바일 메뉴 열리면 배경 스크롤 막기
   useEffect(() => {
     document.body.style.overflow = isMobileMenuOpen ? 'hidden' : '';
     return () => { document.body.style.overflow = ''; };
@@ -64,6 +65,7 @@ export default function Layout() {
   }, []);
 
   const [isDark, setIsDark] = useState(() => localStorage.getItem('theme') !== 'light');
+  const [isAdminOpen, setIsAdminOpen] = useState(false);
 
   const toggleTheme = () => {
     const next = !isDark;
@@ -132,6 +134,10 @@ export default function Layout() {
               className="text-secondary hover:text-accent transition-colors focus:outline-none">
               {isDark ? <Sun size={20} /> : <Moon size={20} />}
             </button>
+            <div className="h-5 w-px bg-fg/20 mx-1" />
+            <a href="https://www.kaist.ac.kr" target="_blank" rel="noopener noreferrer">
+              <img src="/assets/kaist_logo.png" alt="KAIST" className="h-20 w-auto object-contain" />
+            </a>
           </nav>
 
           {/* Mobile right buttons */}
@@ -240,8 +246,18 @@ export default function Layout() {
 
       <footer className="border-t border-fg/10 mt-16 md:mt-24 py-10 md:py-12 text-center text-sm text-secondary px-6">
         <p>© 2026 CONNECT Lab, KAIST. All Rights Reserved.</p>
-        <p className="mt-2 text-white/50">N1 715, KAIST, 291 Daehak-ro, Yuseong-gu, Daejeon 34141, Republic of Korea</p>
+        <p className="mt-2 text-fg/30">N1 715, KAIST, 291 Daehak-ro, Yuseong-gu, Daejeon 34141, Republic of Korea</p>
       </footer>
+
+      {/* 관리자 버튼 */}
+      <button
+        onClick={() => setIsAdminOpen(true)}
+        className="fixed bottom-5 right-5 z-30 px-3 py-1.5 text-[11px] text-secondary/50 hover:text-secondary border border-fg/10 hover:border-fg/30 rounded-sm bg-background/80 backdrop-blur-sm transition-all focus:outline-none"
+      >
+        Admin
+      </button>
+
+      <AdminPanel isOpen={isAdminOpen} onClose={() => setIsAdminOpen(false)} />
     </div>
   );
 }

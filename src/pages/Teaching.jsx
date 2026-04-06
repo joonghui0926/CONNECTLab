@@ -1,6 +1,8 @@
-import { TEACHING_DATA } from '../constants/data';
+import { useData } from '../contexts/DataContext';
 
 export default function Teaching() {
+  const { data: { TEACHING_DATA } } = useData();
+
   return (
     <div className="max-w-5xl mx-auto px-4 md:px-6 py-16 md:py-32">
       <div className="border-b border-fg/20 pb-8 mb-12 md:mb-20">
@@ -18,7 +20,7 @@ export default function Teaching() {
                 <p className="text-secondary font-mono text-sm mt-2 tracking-wide">{school.period}</p>
               )}
             </div>
-            
+
             <div className="grid md:grid-cols-2 gap-x-12 gap-y-6">
               {school.courses.map((course, idx) => (
                 <article key={idx} className="flex flex-col group py-3 border-b border-fg/5 hover:border-fg/20 transition-colors">

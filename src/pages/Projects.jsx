@@ -1,4 +1,4 @@
-import { PROJECTS_DATA } from '../constants/data';
+import { useData } from '../contexts/DataContext';
 
 const ProjectList = ({ title, projects, isHighlight = false }) => (
   <section className="mb-24">
@@ -28,6 +28,7 @@ const ProjectList = ({ title, projects, isHighlight = false }) => (
 );
 
 export default function Projects() {
+  const { data: { PROJECTS_DATA } } = useData();
   const { current, past } = PROJECTS_DATA;
 
   return (
