@@ -1,4 +1,3 @@
-// 네비게이션 링크
 export const NAV_LINKS = [
   {
     "path": "/",
@@ -30,7 +29,6 @@ export const NAV_LINKS = [
   }
 ];
 
-// 홈 - 공지사항, 뉴스, 주소
 export const HOME_DATA = {
   "announcement": {
     "title": "Announcement",
@@ -90,7 +88,6 @@ export const HOME_DATA = {
   "location": "N1 715, KAIST, 291 Daehak-ro, Yuseong-gu, Daejeon 34141, Republic of Korea"
 };
 
-// 교수님 프로필
 export const PROFESSOR_DATA = {
   "name": "Prof. Chang-Sik Choi",
   "koreanName": "최창식",
@@ -152,7 +149,6 @@ export const PROFESSOR_DATA = {
   ]
 };
 
-// Students - 모집 공고, 구성원 카드
 export const STUDENTS_DATA = {
   "recruitment": {
     "title": "[KAIST 전기및전자공학부 CONNECT Lab 대학원생 모집]",
@@ -237,7 +233,6 @@ export const STUDENTS_DATA = {
   ]
 };
 
-// Research - 연구 주제 카드 (이미지는 /assets/)
 export const RESEARCH_DATA = [
   {
     "title": "Stochastic Geometry and Dynamical System Analysis of Walker Satellite Constellations",
@@ -286,7 +281,6 @@ export const RESEARCH_DATA = [
   }
 ];
 
-// Publications - 논문 목록 (저널/학회/프리프린트)
 export const PUBLICATIONS_DATA = {
   "ieeeLink": "https://ieeexplore.ieee.org/author/37086110155",
   "preprints": [
@@ -401,7 +395,6 @@ export const PUBLICATIONS_DATA = {
   ]
 };
 
-// Teaching - 강의 이력
 export const TEACHING_DATA = [
   {
     "university": "KAIST",
@@ -508,7 +501,6 @@ export const TEACHING_DATA = [
   }
 ];
 
-// Projects - 연구비 과제
 export const PROJECTS_DATA = {
   "current": [
     {

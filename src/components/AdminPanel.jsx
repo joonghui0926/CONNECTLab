@@ -1,12 +1,10 @@
 import { useState, useEffect, useRef } from 'react';
-import { X, Plus, Pencil, Trash2, Check, ChevronDown, ChevronUp, LogOut, Upload } from 'lucide-react';
-import { signInWithEmailAndPassword, signOut, onAuthStateChanged } from 'firebase/auth';
+import { X, Plus, Pencil, Trash2, Check, ChevronDown, ChevronUp, LogOut, Upload, Key } from 'lucide-react';
+import { signInWithEmailAndPassword, signOut, onAuthStateChanged, EmailAuthProvider, reauthenticateWithCredential, updatePassword } from 'firebase/auth';
 import { doc, setDoc } from 'firebase/firestore';
 import { ref as storageRef, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { auth, db, storage } from '../firebase';
 import { useData } from '../contexts/DataContext';
-
-// 공통 UI
 
 const Field = ({ label, children }) => (
   <div className="flex flex-col gap-1">
@@ -49,7 +47,6 @@ const Btn = ({ children, onClick, variant = 'default', small, type = 'button' })
   );
 };
 
-// 이미지 업로드 (Firebase Storage)
 function ImageField({ value, onChange }) {
   const inputRef = useRef();
   const [uploading, setUploading] = useState(false);
@@ -97,7 +94,6 @@ function ImageField({ value, onChange }) {
   );
 }
 
-// 수정/삭제 버튼 달린 아이템 카드
 function ItemCard({ summary, editing, onEdit, onDelete, children }) {
   return (
     <div className={`border rounded-sm overflow-hidden transition-colors ${editing ? 'border-accent/40' : 'border-white/8'}`}>
@@ -120,9 +116,6 @@ const SectionTitle = ({ children }) => (
   <h3 className="text-sm font-semibold text-white uppercase tracking-widest mb-4 pb-3 border-b border-white/10">{children}</h3>
 );
 
-// 섹션 에디터들
-
-// Home
 function HomeEditor({ draft, setDraft }) {
   const [editAnn, setEditAnn] = useState(false);
   const [ann, setAnn] = useState({});
@@ -149,7 +142,6 @@ function HomeEditor({ draft, setDraft }) {
 
   return (
     <div className="space-y-10">
-      {/* Announcement */}
       <div>
         <div className="flex items-center justify-between mb-4 pb-3 border-b border-white/10">
           <h3 className="text-sm font-semibold text-white uppercase tracking-widest">공지사항 (Announcement)</h3>
@@ -173,7 +165,6 @@ function HomeEditor({ draft, setDraft }) {
         )}
       </div>
 
-      {/* News */}
       <div>
         <div className="flex items-center justify-between mb-4 pb-3 border-b border-white/10">
           <h3 className="text-sm font-semibold text-white uppercase tracking-widest">뉴스</h3>
@@ -214,7 +205,6 @@ function HomeEditor({ draft, setDraft }) {
   );
 }
 
-// Students
 function StudentsEditor({ draft, setDraft }) {
   const [editIdx, setEditIdx] = useState(null);
   const [editMember, setEditMember] = useState({});
@@ -278,7 +268,6 @@ function StudentsEditor({ draft, setDraft }) {
   );
 }
 
-// Research
 function ResearchEditor({ draft, setDraft }) {
   const [editIdx, setEditIdx] = useState(null);
   const [editCard, setEditCard] = useState({});
@@ -338,7 +327,6 @@ function ResearchEditor({ draft, setDraft }) {
   );
 }
 
-// Publications
 function PubList({ title, items, onChange, ieeeLink }) {
   const [editIdx, setEditIdx] = useState(null);
   const [editItem, setEditItem] = useState({});
@@ -426,7 +414,6 @@ function PublicationsEditor({ draft, setDraft }) {
   );
 }
 
-// Teaching
 function TeachingEditor({ draft, setDraft }) {
   const [editSchoolIdx, setEditSchoolIdx] = useState(null);
   const [editSchool, setEditSchool] = useState({});
@@ -578,7 +565,6 @@ function TeachingEditor({ draft, setDraft }) {
   );
 }
 
-// Projects
 function ProjectList({ title, items, onChange }) {
   const [editIdx, setEditIdx] = useState(null);
   const [editItem, setEditItem] = useState({});
@@ -648,7 +634,6 @@ function ProjectsEditor({ draft, setDraft }) {
   );
 }
 
-// Professor
 function ProfessorEditor({ draft, setDraft }) {
   const prof = draft.PROFESSOR_DATA;
   const upd = (key, val) => setDraft(d => ({ ...d, PROFESSOR_DATA: { ...d.PROFESSOR_DATA, [key]: val } }));
@@ -680,7 +665,6 @@ function ProfessorEditor({ draft, setDraft }) {
 
   return (
     <div className="space-y-10">
-      {/* 기본 정보 */}
       <div>
         <SectionTitle>기본 정보</SectionTitle>
         <div className="space-y-3">
@@ -690,7 +674,6 @@ function ProfessorEditor({ draft, setDraft }) {
         </div>
       </div>
 
-      {/* Bio */}
       <div>
         <div className="flex items-center justify-between mb-4 pb-3 border-b border-white/10">
           <h3 className="text-sm font-semibold text-white uppercase tracking-widest">Bio</h3>
@@ -721,7 +704,6 @@ function ProfessorEditor({ draft, setDraft }) {
         </div>
       </div>
 
-      {/* Research Interests */}
       <div>
         <div className="flex items-center justify-between mb-4 pb-3 border-b border-white/10">
           <h3 className="text-sm font-semibold text-white uppercase tracking-widest">Research Interests</h3>
@@ -752,7 +734,6 @@ function ProfessorEditor({ draft, setDraft }) {
         </div>
       </div>
 
-      {/* Education */}
       <div>
         <div className="flex items-center justify-between mb-4 pb-3 border-b border-white/10">
           <h3 className="text-sm font-semibold text-white uppercase tracking-widest">Education</h3>
@@ -789,7 +770,6 @@ function ProfessorEditor({ draft, setDraft }) {
         </div>
       </div>
 
-      {/* Experience */}
       <div>
         <div className="flex items-center justify-between mb-4 pb-3 border-b border-white/10">
           <h3 className="text-sm font-semibold text-white uppercase tracking-widest">Professional Experience</h3>
@@ -824,7 +804,6 @@ function ProfessorEditor({ draft, setDraft }) {
         </div>
       </div>
 
-      {/* Selected Publications */}
       <div>
         <div className="flex items-center justify-between mb-4 pb-3 border-b border-white/10">
           <h3 className="text-sm font-semibold text-white uppercase tracking-widest">Selected Publications</h3>
@@ -858,7 +837,72 @@ function ProfessorEditor({ draft, setDraft }) {
   );
 }
 
-// AdminPanel 본체
+function PasswordModal({ onClose }) {
+  const [currentPw, setCurrentPw] = useState('');
+  const [newPw, setNewPw] = useState('');
+  const [confirmPw, setConfirmPw] = useState('');
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+
+  const submit = async (e) => {
+    e.preventDefault();
+    setError('');
+
+    if (newPw.length < 6) { setError('새 비밀번호는 6자 이상이어야 합니다.'); return; }
+    if (newPw !== confirmPw) { setError('새 비밀번호가 일치하지 않습니다.'); return; }
+
+    setSubmitting(true);
+    try {
+      const user = auth.currentUser;
+      const cred = EmailAuthProvider.credential(user.email, currentPw);
+      await reauthenticateWithCredential(user, cred);
+      await updatePassword(user, newPw);
+      setSuccess(true);
+      setTimeout(onClose, 1500);
+    } catch (err) {
+      if (err.code === 'auth/wrong-password' || err.code === 'auth/invalid-credential') {
+        setError('현재 비밀번호가 올바르지 않습니다.');
+      } else {
+        setError('변경 실패: ' + err.message);
+      }
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  return (
+    <div className="fixed inset-0 z-[300] bg-black/70 flex items-center justify-center p-4">
+      <div className="bg-[#0a0a0a] border border-white/10 rounded-sm w-full max-w-sm">
+        <div className="flex items-center justify-between px-5 h-11 border-b border-white/10">
+          <span className="text-sm text-white font-medium">비밀번호 변경</span>
+          <button onClick={onClose} className="text-gray-500 hover:text-white">
+            <X size={16} />
+          </button>
+        </div>
+        <form onSubmit={submit} className="p-5 space-y-4">
+          {success ? (
+            <p className="text-green-400 text-sm text-center py-4">비밀번호가 변경되었습니다.</p>
+          ) : (
+            <>
+              <Input label="현재 비밀번호" type="password" value={currentPw} onChange={e => setCurrentPw(e.target.value)} autoFocus />
+              <Input label="새 비밀번호 (6자 이상)" type="password" value={newPw} onChange={e => setNewPw(e.target.value)} />
+              <Input label="새 비밀번호 확인" type="password" value={confirmPw} onChange={e => setConfirmPw(e.target.value)} />
+              {error && <p className="text-red-400 text-xs">{error}</p>}
+              <button
+                type="submit"
+                disabled={submitting}
+                className="w-full py-2 bg-accent hover:bg-amber-300 text-black font-medium rounded text-sm disabled:opacity-50"
+              >
+                {submitting ? '변경 중...' : '변경'}
+              </button>
+            </>
+          )}
+        </form>
+      </div>
+    </div>
+  );
+}
 
 const SECTIONS = [
   { id: 'home',         label: 'Home' },
@@ -878,6 +922,7 @@ export default function AdminPanel({ isOpen, onClose }) {
   const [form, setForm] = useState({ id: '', password: '' });
   const [error, setError] = useState('');
   const [saving, setSaving] = useState(false);
+  const [showPwModal, setShowPwModal] = useState(false);
   const initialized = useRef(false);
 
   useEffect(() => {
@@ -942,21 +987,29 @@ export default function AdminPanel({ isOpen, onClose }) {
 
   return (
     <div className="fixed inset-0 z-[200] bg-[#0a0a0a] flex flex-col font-sans">
-      {/* 상단 헤더 */}
       <div className="flex items-center justify-between px-6 h-12 border-b border-white/10 shrink-0">
         <span className="font-serif text-accent text-sm tracking-widest uppercase font-bold">
           CONNECT Lab — Admin
         </span>
         <div className="flex items-center gap-3">
           {isLoggedIn && (
-            <button
-              onClick={handleSaveAndLogout}
-              disabled={saving}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs bg-accent hover:bg-amber-300 text-black font-medium rounded transition-colors disabled:opacity-50"
-            >
-              <LogOut size={12} />
-              {saving ? '저장 중...' : '저장 후 로그아웃'}
-            </button>
+            <>
+              <button
+                onClick={() => setShowPwModal(true)}
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs bg-white/10 hover:bg-white/20 text-white rounded transition-colors"
+              >
+                <Key size={12} />
+                비밀번호 변경
+              </button>
+              <button
+                onClick={handleSaveAndLogout}
+                disabled={saving}
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs bg-accent hover:bg-amber-300 text-black font-medium rounded transition-colors disabled:opacity-50"
+              >
+                <LogOut size={12} />
+                {saving ? '저장 중...' : '저장 후 로그아웃'}
+              </button>
+            </>
           )}
           <button onClick={onClose} className="text-gray-600 hover:text-white transition-colors p-1">
             <X size={18} />
@@ -965,7 +1018,6 @@ export default function AdminPanel({ isOpen, onClose }) {
       </div>
 
       {!isLoggedIn ? (
-        // 로그인 화면
         <div className="flex-1 flex items-center justify-center px-6">
           <form onSubmit={handleLogin} className="w-full max-w-xs space-y-5">
             <h2 className="text-lg font-serif text-white text-center">관리자 로그인</h2>
@@ -992,9 +1044,7 @@ export default function AdminPanel({ isOpen, onClose }) {
           </form>
         </div>
       ) : (
-        // 편집 화면
         <div className="flex flex-1 overflow-hidden">
-          {/* 사이드바 */}
           <aside className="w-44 border-r border-white/8 flex flex-col py-4 shrink-0">
             {SECTIONS.map(s => (
               <button
@@ -1011,12 +1061,13 @@ export default function AdminPanel({ isOpen, onClose }) {
             ))}
           </aside>
 
-          {/* 콘텐츠 */}
           <main className="flex-1 overflow-y-auto p-6 md:p-8">
             {renderSection()}
           </main>
         </div>
       )}
+
+      {showPwModal && <PasswordModal onClose={() => setShowPwModal(false)} />}
     </div>
   );
 }

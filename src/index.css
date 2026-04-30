@@ -2,20 +2,18 @@
 @tailwind components;
 @tailwind utilities;
 
-/* 라이트 모드 (comma-separated rgba 방식 - 모든 브라우저 호환) */
 :root {
-  --color-background: 249, 250, 251;  /* #f9fafb */
-  --color-primary:    17, 17, 17;     /* #111111 */
-  --color-secondary:  90, 90, 90;     /* #5a5a5a */
-  --color-fg:         0, 0, 0;        /* 검정 - border-fg/10 등 불투명도 유틸리티용 */
+  --color-background: 249, 250, 251;
+  --color-primary:    17, 17, 17;
+  --color-secondary:  90, 90, 90;
+  --color-fg:         0, 0, 0;
 }
 
-/* 다크 모드 */
 .dark {
-  --color-background: 17, 17, 17;     /* #111111 */
-  --color-primary:    255, 255, 255;  /* #ffffff */
-  --color-secondary:  229, 231, 235;  /* #e5e7eb */
-  --color-fg:         255, 255, 255;  /* 흰색 */
+  --color-background: 17, 17, 17;
+  --color-primary:    255, 255, 255;
+  --color-secondary:  229, 231, 235;
+  --color-fg:         255, 255, 255;
 }
 
 body {
@@ -24,7 +22,6 @@ body {
   @apply font-sans antialiased selection:bg-accent selection:text-black;
 }
 
-/* 스크롤바 커스텀 */
 ::-webkit-scrollbar {
   width: 8px;
 }

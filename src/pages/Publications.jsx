@@ -29,7 +29,7 @@ export default function Publications() {
   return (
     <div className="max-w-5xl mx-auto px-4 md:px-6 py-16 md:py-32">
       <div className="border-b border-fg/20 pb-8 mb-16 flex flex-col md:flex-row md:items-end justify-between gap-4">
-        <h1 className="font-serif text-5xl font-bold text-primary">Publications</h1>
+        <h1 className="font-serif text-4xl md:text-5xl font-bold text-primary">Publications</h1>
         <a
           href={ieeeLink}
           target="_blank"

@@ -1,6 +1,3 @@
-// data.js 내용과 public/assets/ 이미지를 Firebase에 올리는 스크립트
-// 사용: npm run seed
-
 import { initializeApp } from 'firebase/app';
 import { getFirestore, doc, setDoc } from 'firebase/firestore';
 import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';

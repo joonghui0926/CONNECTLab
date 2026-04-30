@@ -7,7 +7,7 @@ export default function Students() {
   return (
     <div className="max-w-6xl mx-auto px-4 md:px-6 py-16 md:py-32">
       <div className="border-b border-fg/20 pb-8 mb-16">
-        <h1 className="font-serif text-5xl font-bold text-primary">Students & Alumni</h1>
+        <h1 className="font-serif text-4xl md:text-5xl font-bold text-primary">Students & Alumni</h1>
       </div>
 
       <section className="mb-16 md:mb-32">

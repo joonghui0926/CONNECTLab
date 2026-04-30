@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
-import { Search, X, ChevronDown, Menu, Sun, Moon } from 'lucide-react';
+import { Search, X, ChevronDown, Sun, Moon } from 'lucide-react';
 import { NAV_LINKS, RESEARCH_DATA, PUBLICATIONS_DATA } from '../constants/data';
 import AdminPanel from './AdminPanel';
 
@@ -11,15 +11,8 @@ export default function Layout() {
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState([]);
   const [isMembersOpen, setIsMembersOpen] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [isMobileMembersOpen, setIsMobileMembersOpen] = useState(false);
   const membersRef = useRef(null);
-
-  // 페이지 이동하면 모바일 메뉴 닫기
-  useEffect(() => {
-    setIsMobileMenuOpen(false);
-    setIsMobileMembersOpen(false);
-  }, [location.pathname]);
+  const mobileTabsRef = useRef(null);
 
   useEffect(() => {
     const handleClickOutside = (e) => {
@@ -31,11 +24,11 @@ export default function Layout() {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  // 모바일 메뉴 열리면 배경 스크롤 막기
   useEffect(() => {
-    document.body.style.overflow = isMobileMenuOpen ? 'hidden' : '';
-    return () => { document.body.style.overflow = ''; };
-  }, [isMobileMenuOpen]);
+    if (!mobileTabsRef.current) return;
+    const active = mobileTabsRef.current.querySelector('[data-active="true"]');
+    if (active) active.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+  }, [location.pathname]);
 
   useEffect(() => {
     if (searchQuery.length < 2) { setSearchResults([]); return; }
@@ -59,7 +52,7 @@ export default function Layout() {
   }, [searchQuery]);
 
   useEffect(() => {
-    const handleKeyDown = (e) => { if (e.key === 'Escape') { setIsSearchOpen(false); setIsMobileMenuOpen(false); } };
+    const handleKeyDown = (e) => { if (e.key === 'Escape') setIsSearchOpen(false); };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
@@ -79,12 +72,11 @@ export default function Layout() {
   return (
     <div className="min-h-screen flex flex-col font-sans relative">
       <header className="fixed top-0 w-full z-40 bg-background/90 backdrop-blur-md border-b border-fg/10">
-        <div className="max-w-7xl mx-auto px-6 h-16 md:h-20 flex items-center justify-between">
-          <Link to="/" className="font-serif font-bold text-xl tracking-wider text-primary">
+        <div className="max-w-7xl mx-auto px-4 md:px-6 h-16 md:h-20 flex items-center justify-between">
+          <Link to="/" className="font-serif font-bold text-base sm:text-lg md:text-xl tracking-wider text-primary shrink-0">
             CONNECT <span className="text-accent">Lab</span>
           </Link>
 
-          {/* Desktop Nav */}
           <nav className="hidden md:flex gap-4 items-center">
             {NAV_LINKS.filter(link => link.path !== '/professor' && link.path !== '/students').map((link) => {
               if (link.path === '/research') {
@@ -140,78 +132,45 @@ export default function Layout() {
             </a>
           </nav>
 
-          {/* Mobile right buttons */}
-          <div className="flex md:hidden items-center gap-3">
+          <div className="flex md:hidden items-center gap-1.5">
             <button onClick={() => { setIsSearchOpen(true); setSearchQuery(''); }}
-              className="text-secondary hover:text-accent transition-colors focus:outline-none p-1">
+              className="text-secondary hover:text-accent transition-colors focus:outline-none p-1.5">
               <Search size={20} />
             </button>
             <button onClick={toggleTheme}
-              className="text-secondary hover:text-accent transition-colors focus:outline-none p-1">
+              className="text-secondary hover:text-accent transition-colors focus:outline-none p-1.5">
               {isDark ? <Sun size={20} /> : <Moon size={20} />}
             </button>
-            <button onClick={() => setIsMobileMenuOpen(true)}
-              className="text-secondary hover:text-primary transition-colors focus:outline-none p-1">
-              <Menu size={24} />
-            </button>
+            <a href="https://www.kaist.ac.kr" target="_blank" rel="noopener noreferrer" className="ml-1 shrink-0">
+              <img src="/assets/kaist_logo.png" alt="KAIST" className="h-11 w-auto object-contain" />
+            </a>
           </div>
         </div>
-      </header>
 
-      {/* Mobile Menu Drawer */}
-      {isMobileMenuOpen && (
-        <div className="fixed inset-0 z-50 md:hidden">
-          {/* Backdrop */}
-          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setIsMobileMenuOpen(false)} />
-          {/* Drawer */}
-          <div className="absolute right-0 top-0 h-full w-72 bg-background border-l border-fg/10 flex flex-col">
-            {/* Header */}
-            <div className="flex items-center justify-between px-6 h-16 border-b border-fg/10">
-              <span className="font-serif font-bold text-lg text-primary">
-                CONNECT <span className="text-accent">Lab</span>
-              </span>
-              <button onClick={() => setIsMobileMenuOpen(false)} className="text-secondary hover:text-white p-1">
-                <X size={22} />
-              </button>
-            </div>
-            {/* Nav Links */}
-            <nav className="flex-1 overflow-y-auto py-4">
-              <Link to="/"
-                className={`flex items-center px-6 py-4 text-sm uppercase tracking-widest border-b border-white/5 transition-colors ${location.pathname === '/' ? 'text-accent' : 'text-secondary hover:text-primary'}`}>
-                Home
-              </Link>
-
-              {/* Members expandable */}
-              <button onClick={() => setIsMobileMembersOpen(prev => !prev)}
-                className={`w-full flex items-center justify-between px-6 py-4 text-sm uppercase tracking-widest border-b border-white/5 transition-colors ${isMemberActive ? 'text-accent' : 'text-secondary hover:text-primary'}`}>
-                Members
-                <ChevronDown size={14} className={`transition-transform ${isMobileMembersOpen ? 'rotate-180' : ''}`} />
-              </button>
-              {isMobileMembersOpen && (
-                <div className="bg-fg/[0.03] border-b border-white/5">
-                  <Link to="/professor"
-                    className={`flex items-center px-10 py-3 text-sm uppercase tracking-widest transition-colors ${location.pathname === '/professor' ? 'text-accent' : 'text-secondary hover:text-primary'}`}>
-                    Professor
-                  </Link>
-                  <Link to="/students"
-                    className={`flex items-center px-10 py-3 text-sm uppercase tracking-widest transition-colors ${location.pathname === '/students' ? 'text-accent' : 'text-secondary hover:text-primary'}`}>
-                    Students
-                  </Link>
-                </div>
-              )}
-
-              {NAV_LINKS.filter(l => l.path !== '/' && l.path !== '/professor' && l.path !== '/students').map(link => (
-                <Link key={link.path} to={link.path}
-                  className={`flex items-center px-6 py-4 text-sm uppercase tracking-widest border-b border-white/5 transition-colors ${location.pathname === link.path ? 'text-accent' : 'text-secondary hover:text-primary'}`}>
+        <nav className="md:hidden border-t border-fg/5 overflow-x-auto" style={{ scrollbarWidth: 'none' }} ref={mobileTabsRef}>
+          <style>{`nav::-webkit-scrollbar { display: none; }`}</style>
+          <div className="flex items-center px-2 py-2 gap-1 whitespace-nowrap">
+            {NAV_LINKS.map(link => {
+              const isActive = location.pathname === link.path;
+              return (
+                <Link
+                  key={link.path}
+                  to={link.path}
+                  data-active={isActive}
+                  className={`px-3 py-1.5 text-xs uppercase tracking-widest rounded-sm transition-colors ${
+                    isActive
+                      ? 'text-accent bg-fg/[0.06] font-medium'
+                      : 'text-secondary hover:text-primary'
+                  }`}
+                >
                   {link.label}
                 </Link>
-              ))}
-            </nav>
+              );
+            })}
           </div>
-        </div>
-      )}
+        </nav>
+      </header>
 
-      {/* Search Overlay */}
       {isSearchOpen && (
         <div className="fixed inset-0 z-50 flex items-start justify-center pt-24 md:pt-32 bg-black/95 backdrop-blur-sm">
           <div className="w-full max-w-3xl px-6">
@@ -240,16 +199,16 @@ export default function Layout() {
         </div>
       )}
 
-      <main className="flex-grow pt-16 md:pt-20">
+      <main className="flex-grow pt-[7rem] md:pt-20">
         <Outlet />
       </main>
 
       <footer className="border-t border-fg/10 mt-16 md:mt-24 py-10 md:py-12 text-center text-sm text-secondary px-6">
         <p>© 2026 CONNECT Lab, KAIST. All Rights Reserved.</p>
         <p className="mt-2 text-fg/30">N1 715, KAIST, 291 Daehak-ro, Yuseong-gu, Daejeon 34141, Republic of Korea</p>
+        <p className="mt-4 text-[11px] text-fg/25 tracking-wide">Webpage created by Joonghui Cho (KAIST EE)</p>
       </footer>
 
-      {/* 관리자 버튼 */}
       <button
         onClick={() => setIsAdminOpen(true)}
         className="fixed bottom-5 right-5 z-30 px-3 py-1.5 text-[11px] text-secondary/50 hover:text-secondary border border-fg/10 hover:border-fg/30 rounded-sm bg-background/80 backdrop-blur-sm transition-all focus:outline-none"

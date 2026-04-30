@@ -13,7 +13,6 @@ import {
 
 const DataContext = createContext(null);
 
-// Firestore 로드 전 또는 실패 시 data.js를 fallback으로 씀
 const DEFAULTS = { HOME_DATA, PROFESSOR_DATA, STUDENTS_DATA, RESEARCH_DATA, PUBLICATIONS_DATA, TEACHING_DATA, PROJECTS_DATA };
 
 export function DataProvider({ children }) {

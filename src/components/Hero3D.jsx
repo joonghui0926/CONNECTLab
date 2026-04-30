@@ -1,9 +1,18 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
 import gsap from 'gsap';
 
 export default function Hero3D() {
   const mountRef = useRef(null);
+  const [isDark, setIsDark] = useState(() => document.documentElement.classList.contains('dark'));
+
+  useEffect(() => {
+    const observer = new MutationObserver(() => {
+      setIsDark(document.documentElement.classList.contains('dark'));
+    });
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+    return () => observer.disconnect();
+  }, []);
 
   useEffect(() => {
     if (!mountRef.current) return;
@@ -17,24 +26,32 @@ export default function Hero3D() {
     let animationFrameId;
 
     const scene = new THREE.Scene();
-    scene.fog = new THREE.FogExp2(0x111111, 0.002);
+    scene.fog = new THREE.FogExp2(isDark ? 0x111111 : 0xf9fafb, 0.002);
 
-    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 2000);
-    camera.position.z = 500;
+    // 캔버스가 차지할 실제 영역 (모바일에선 탭바 빼고 보이는 영역)
+    const containerWidth = mountRef.current.clientWidth;
+    const containerHeight = mountRef.current.clientHeight;
+    const aspectRatio = containerWidth / containerHeight;
+    const isMobile = window.innerWidth < 768;
+    const cameraTargetZ = aspectRatio < 1 ? Math.max(450, (450 / aspectRatio) * 0.65) : 450;
+    const cameraStartZ = cameraTargetZ * 3.3;
+
+    const camera = new THREE.PerspectiveCamera(75, aspectRatio, 0.1, cameraStartZ * 2);
+    camera.position.z = cameraStartZ;
 
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)); // 레티나 디스플레이 대응, 2 이상은 성능 저하
+    renderer.setSize(containerWidth, containerHeight);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     mountRef.current.appendChild(renderer.domElement);
 
-    const particleCount = 400;
+    const particleCount = isMobile ? 250 : 400;
     const geometry = new THREE.BufferGeometry();
     const positions = new Float32Array(particleCount * 3);
     const targetPositions = new Float32Array(particleCount * 3);
     const colors = new Float32Array(particleCount * 3);
 
     const colorGold = new THREE.Color(0xfccd4d);
-    const colorWhite = new THREE.Color(0xffffff);
+    const colorBase = new THREE.Color(isDark ? 0xffffff : 0x1a1a1a);
     const radius = 200;
 
     for (let i = 0; i < particleCount; i++) {
@@ -49,7 +66,7 @@ export default function Hero3D() {
       targetPositions[i * 3 + 1] = radius * Math.sin(theta) * Math.sin(phi);
       targetPositions[i * 3 + 2] = radius * Math.cos(phi);
 
-      const chosenColor = Math.random() > 0.3 ? colorGold : colorWhite;
+      const chosenColor = Math.random() > 0.3 ? colorGold : colorBase;
       colors[i * 3] = chosenColor.r;
       colors[i * 3 + 1] = chosenColor.g;
       colors[i * 3 + 2] = chosenColor.b;
@@ -60,11 +77,11 @@ export default function Hero3D() {
     originalTargetPosArr = new Float32Array(targetPositions);
 
     const particleMaterial = new THREE.PointsMaterial({
-      size: 4.5, 
-      vertexColors: true, 
+      size: 4.5,
+      vertexColors: true,
       transparent: true,
-      opacity: 0.8, 
-      blending: THREE.AdditiveBlending, 
+      opacity: isDark ? 0.8 : 0.9,
+      blending: isDark ? THREE.AdditiveBlending : THREE.NormalBlending,
       depthTest: false
     });
 
@@ -86,10 +103,10 @@ export default function Hero3D() {
     lineGeometry.setAttribute('position', new THREE.BufferAttribute(linePositions, 3));
     
     const lineMaterial = new THREE.LineBasicMaterial({
-      color: 0xffffff, 
-      transparent: true, 
-      opacity: 0.08, 
-      blending: THREE.AdditiveBlending
+      color: isDark ? 0xffffff : 0x1a1a1a,
+      transparent: true,
+      opacity: isDark ? 0.08 : 0.12,
+      blending: isDark ? THREE.AdditiveBlending : THREE.NormalBlending
     });
 
     const linesMesh = new THREE.LineSegments(lineGeometry, lineMaterial);
@@ -98,8 +115,8 @@ export default function Hero3D() {
     const posAttribute = geometry.attributes.position;
     
     gsap.fromTo(camera.position,
-      { z: 1500, y: -200 }, 
-      { z: 450, y: 0, duration: 4, ease: "power4.out" }
+      { z: cameraStartZ, y: -200 },
+      { z: cameraTargetZ, y: 0, duration: 4, ease: "power4.out" }
     );
 
     for (let i = 0; i < particleCount; i++) {
@@ -132,8 +149,22 @@ export default function Hero3D() {
     
     const onMouseLeave = () => { isHovering = false; };
 
+    const onTouchMove = (event) => {
+      if (event.touches.length === 0) return;
+      const touch = event.touches[0];
+      mouseX = (touch.clientX / window.innerWidth) * 2 - 1;
+      mouseY = -(touch.clientY / window.innerHeight) * 2 + 1;
+      mouseVec.set(mouseX, mouseY);
+      lastMouseMoveTime = Date.now();
+      isHovering = true;
+    };
+
+    const onTouchEnd = () => { isHovering = false; };
+
     window.addEventListener('mousemove', onMouseMove);
     document.body.addEventListener('mouseleave', onMouseLeave);
+    window.addEventListener('touchmove', onTouchMove, { passive: true });
+    window.addEventListener('touchend', onTouchEnd);
 
     const animate = () => {
       animationFrameId = requestAnimationFrame(animate);
@@ -199,9 +230,17 @@ export default function Hero3D() {
     animate();
 
     const handleResize = () => {
-      camera.aspect = window.innerWidth / window.innerHeight;
+      if (!mountRef.current) return;
+      const newW = mountRef.current.clientWidth;
+      const newH = mountRef.current.clientHeight;
+      const newAspect = newW / newH;
+      camera.aspect = newAspect;
       camera.updateProjectionMatrix();
-      renderer.setSize(window.innerWidth, window.innerHeight);
+      renderer.setSize(newW, newH);
+      // 어셈블리 끝난 후에는 화면 회전 시 카메라 거리도 갱신
+      if (isAssemblyComplete) {
+        camera.position.z = newAspect < 1 ? Math.max(450, (450 / newAspect) * 0.65) : 450;
+      }
     };
     
     window.addEventListener('resize', handleResize);
@@ -209,6 +248,8 @@ export default function Hero3D() {
     return () => {
       window.removeEventListener('resize', handleResize);
       window.removeEventListener('mousemove', onMouseMove);
+      window.removeEventListener('touchmove', onTouchMove);
+      window.removeEventListener('touchend', onTouchEnd);
       document.body.removeEventListener('mouseleave', onMouseLeave);
       clearTimeout(assemblyTimeout);
       cancelAnimationFrame(animationFrameId);
@@ -221,7 +262,7 @@ export default function Hero3D() {
         mountRef.current.removeChild(renderer.domElement);
       }
     };
-  }, []);
+  }, [isDark]);
 
   return (
     <div 

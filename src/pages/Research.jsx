@@ -5,8 +5,8 @@ export default function Research() {
 
   return (
     <div className="max-w-6xl mx-auto px-4 md:px-6 py-16 md:py-32">
-      <div className="border-b border-fg/20 pb-8 mb-20">
-        <h1 className="font-serif text-5xl font-bold text-primary">Research</h1>
+      <div className="border-b border-fg/20 pb-6 md:pb-8 mb-12 md:mb-20">
+        <h1 className="font-serif text-4xl md:text-5xl font-bold text-primary">Research</h1>
       </div>
 
       <div className="space-y-16 md:space-y-32">
