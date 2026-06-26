@@ -28,7 +28,6 @@ export default function Hero3D() {
     const scene = new THREE.Scene();
     scene.fog = new THREE.FogExp2(isDark ? 0x111111 : 0xf9fafb, 0.002);
 
-    // 캔버스가 차지할 실제 영역 (모바일에선 탭바 빼고 보이는 영역)
     const containerWidth = mountRef.current.clientWidth;
     const containerHeight = mountRef.current.clientHeight;
     const aspectRatio = containerWidth / containerHeight;
@@ -237,7 +236,6 @@ export default function Hero3D() {
       camera.aspect = newAspect;
       camera.updateProjectionMatrix();
       renderer.setSize(newW, newH);
-      // 어셈블리 끝난 후에는 화면 회전 시 카메라 거리도 갱신
       if (isAssemblyComplete) {
         camera.position.z = newAspect < 1 ? Math.max(450, (450 / newAspect) * 0.65) : 450;
       }

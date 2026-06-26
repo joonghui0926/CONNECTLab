@@ -12,7 +12,6 @@ export default function Research() {
       <div className="space-y-16 md:space-y-32">
         {RESEARCH_DATA.map((topic, index) => (
           <article key={index} className="grid lg:grid-cols-12 gap-8 lg:gap-12 items-start group">
-            {/* 이미지 박스: mix-blend-multiply를 위해 흰 배경 유지 */}
             <div className="lg:col-span-5 bg-white/95 rounded-sm overflow-hidden aspect-[4/3] relative flex items-center justify-center p-4">
               <img
                 src={topic.image}
